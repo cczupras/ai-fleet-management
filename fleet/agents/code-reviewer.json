@@ -5,7 +5,7 @@
   "description": "An AI agent specialized in reviewing code for quality, bugs, and best practices.",
   "model": "gpt-4",
   "prompt_ref": "system-code-review",
-  "skills": ["code-analysis", "summarization"],
+  "skills": ["code-analysis"],
   "mcp_configs": ["github-server"],
   "parameters": {
     "temperature": 0.3,
