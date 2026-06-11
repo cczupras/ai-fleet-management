@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cczupras/ai-fleet-management/schemas/v1/agent.schema.json",
+  "title": "Agent",
+  "description": "Schema for an AI Agent resource in the Fleet Management system.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "description", "model"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1",
+      "description": "Schema version identifier."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique identifier for the agent (kebab-case)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name for the agent."
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what the agent does."
+    },
+    "model": {
+      "type": "string",
+      "description": "The AI model used by this agent (e.g., 'gpt-4', 'claude-sonnet-4-20250514')."
+    },
+    "system_prompt": {
+      "type": "string",
+      "description": "Inline system prompt, or use prompt_ref to reference a shared prompt."
+    },
+    "prompt_ref": {
+      "type": "string",
+      "description": "Reference to a shared prompt resource by its ID."
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of skill IDs assigned to this agent."
+    },
+    "mcp_configs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of MCP configuration IDs available to this agent."
+    },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "top_p": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true,
+      "description": "Model parameters and configuration."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization and search."
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Metadata about the agent resource."
+    }
+  },
+  "additionalProperties": false
+}

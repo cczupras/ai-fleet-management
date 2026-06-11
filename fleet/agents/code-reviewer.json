@@ -1,0 +1,20 @@
+{
+  "schema_version": "v1",
+  "id": "code-reviewer",
+  "name": "Code Reviewer",
+  "description": "An AI agent specialized in reviewing code for quality, bugs, and best practices.",
+  "model": "gpt-4",
+  "prompt_ref": "system-code-review",
+  "skills": ["code-analysis", "summarization"],
+  "mcp_configs": ["github-server"],
+  "parameters": {
+    "temperature": 0.3,
+    "max_tokens": 4096
+  },
+  "tags": ["code-quality", "review"],
+  "metadata": {
+    "author": "cczupras",
+    "created_at": "2026-06-11T00:00:00Z",
+    "updated_at": "2026-06-11T00:00:00Z"
+  }
+}
