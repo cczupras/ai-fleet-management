@@ -26,11 +26,7 @@ src/
 
 ## Authentication
 
-Every API request (except `/health` and `/api/v1/docs`) must include a GitHub Personal Access Token with **`repo`** scope:
-
-```
-Authorization: ******
-```
+Every API request (except `/health` and `/api/v1/docs`) must include a GitHub Personal Access Token (PAT) with **`repo`** scope using the HTTP bearer token scheme in the `Authorization` header.
 
 The token is forwarded directly to the GitHub API – the server never stores it.
 

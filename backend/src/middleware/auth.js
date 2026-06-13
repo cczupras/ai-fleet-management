@@ -1,23 +1,25 @@
 'use strict';
 
 /**
- * Auth middleware – expects a GitHub PAT in the Authorization header.
- * Format: "******"
- * The token is attached to req.githubToken for downstream use.
+ * Auth middleware - expects a GitHub Personal Access Token (PAT) in the
+ * Authorization header using the standard HTTP bearer token scheme.
+ * The token is forwarded to the GitHub API and never stored server-side.
  */
 function auth(req, res, next) {
+  const schemePrefix = 'Bearer ';
   const authHeader = req.headers['authorization'];
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith(schemePrefix)) {
     return res.status(401).json({
       error: 'Unauthorized',
-      message: 'A GitHub Personal Access Token must be provided as a ******',
+      message:
+        'Missing or invalid Authorization header. Provide a GitHub PAT via: Authorization: ******',
     });
   }
-  req.githubToken = authHeader.slice('Bearer '.length).trim();
+  req.githubToken = authHeader.slice(schemePrefix.length).trim();
   if (!req.githubToken) {
     return res.status(401).json({
       error: 'Unauthorized',
-      message: '****** is empty.',
+      message: 'The token in the Authorization header is empty.',
     });
   }
   next();
