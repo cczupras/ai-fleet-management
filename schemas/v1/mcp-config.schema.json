@@ -27,7 +27,10 @@
     },
     "server": {
       "type": "object",
-      "required": ["command"],
+      "oneOf": [
+        { "required": ["command"] },
+        { "required": ["url"] }
+      ],
       "properties": {
         "command": {
           "type": "string",
@@ -54,7 +57,7 @@
         }
       },
       "additionalProperties": false,
-      "description": "Server connection configuration."
+      "description": "Server connection configuration. Must specify either 'command' (local) or 'url' (remote)."
     },
     "tools": {
       "type": "array",

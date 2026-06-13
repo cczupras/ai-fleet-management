@@ -5,6 +5,10 @@
   "description": "Schema for an AI Agent resource in the Fleet Management system.",
   "type": "object",
   "required": ["schema_version", "id", "name", "description", "model"],
+  "anyOf": [
+    { "required": ["system_prompt"] },
+    { "required": ["prompt_ref"] }
+  ],
   "properties": {
     "schema_version": {
       "type": "string",
@@ -35,21 +39,24 @@
     },
     "prompt_ref": {
       "type": "string",
-      "description": "Reference to a shared prompt resource by its ID."
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Reference to a shared prompt resource by its ID (kebab-case)."
     },
     "skills": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
       },
-      "description": "List of skill IDs assigned to this agent."
+      "description": "List of skill IDs assigned to this agent (kebab-case)."
     },
     "mcp_configs": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
       },
-      "description": "List of MCP configuration IDs available to this agent."
+      "description": "List of MCP configuration IDs available to this agent (kebab-case)."
     },
     "parameters": {
       "type": "object",

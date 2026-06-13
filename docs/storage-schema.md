@@ -7,17 +7,13 @@ This document defines the data structures, folder conventions, and versioning st
 ```
 fleet/
 ├── agents/
-│   ├── code-reviewer.json
-│   └── research-assistant.json
+│   └── code-reviewer.json
 ├── skills/
-│   ├── code-analysis.json
-│   └── summarization.json
+│   └── code-analysis.json
 ├── prompts/
-│   ├── system-code-review.json
-│   └── user-bug-report.json
+│   └── system-code-review.json
 └── mcp-configs/
-    ├── github-server.json
-    └── filesystem-server.json
+    └── github-server.json
 schemas/
 └── v1/
     ├── agent.schema.json
