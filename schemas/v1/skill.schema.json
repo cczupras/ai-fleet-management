@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cczupras/ai-fleet-management/schemas/v1/skill.schema.json",
+  "title": "Skill",
+  "description": "Schema for a Skill resource in the Fleet Management system. Skills can contain sub-skills.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "description"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1",
+      "description": "Schema version identifier."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique identifier for the skill (kebab-case)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name for the skill."
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what the skill does."
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Instructions or prompt template that defines the skill behavior."
+    },
+    "input_schema": {
+      "type": "object",
+      "description": "JSON Schema defining expected inputs for this skill."
+    },
+    "output_schema": {
+      "type": "object",
+      "description": "JSON Schema defining expected outputs from this skill."
+    },
+    "sub_skills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sub_skill"
+      },
+      "description": "List of sub-skills that compose this skill."
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "description": "List of other skill IDs this skill depends on (kebab-case)."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization and search."
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Metadata about the skill resource."
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "sub_skill": {
+      "type": "object",
+      "required": ["id", "name", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Unique identifier for the sub-skill (kebab-case)."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable display name for the sub-skill."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of what the sub-skill does."
+        },
+        "instructions": {
+          "type": "string",
+          "description": "Instructions or prompt template for the sub-skill."
+        },
+        "input_schema": {
+          "type": "object",
+          "description": "JSON Schema defining expected inputs for this sub-skill."
+        },
+        "output_schema": {
+          "type": "object",
+          "description": "JSON Schema defining expected outputs from this sub-skill."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

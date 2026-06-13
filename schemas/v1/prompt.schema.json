@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cczupras/ai-fleet-management/schemas/v1/prompt.schema.json",
+  "title": "Prompt",
+  "description": "Schema for a Prompt resource in the Fleet Management system.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "content"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1",
+      "description": "Schema version identifier."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique identifier for the prompt (kebab-case)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name for the prompt."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of when and how to use this prompt."
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The prompt text content. Supports template variables using {{variable}} syntax."
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Variable name as used in the content template."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what value this variable expects."
+          },
+          "required": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this variable must be provided."
+          },
+          "default": {
+            "type": "string",
+            "description": "Default value if not provided."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Template variables used in the prompt content."
+    },
+    "role": {
+      "type": "string",
+      "enum": ["system", "user", "assistant"],
+      "description": "The message role this prompt is intended for."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization and search."
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Metadata about the prompt resource."
+    }
+  },
+  "additionalProperties": false
+}

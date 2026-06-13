@@ -1,0 +1,43 @@
+{
+  "schema_version": "v1",
+  "id": "code-analysis",
+  "name": "Code Analysis",
+  "description": "Skill for analyzing source code structure, patterns, and potential issues.",
+  "instructions": "Analyze the provided code for structure, patterns, potential bugs, and adherence to best practices. Provide actionable feedback.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "code": { "type": "string" },
+      "language": { "type": "string" }
+    },
+    "required": ["code"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "issues": { "type": "array" },
+      "suggestions": { "type": "array" },
+      "summary": { "type": "string" }
+    }
+  },
+  "sub_skills": [
+    {
+      "id": "bug-detection",
+      "name": "Bug Detection",
+      "description": "Identifies potential bugs and runtime errors in code.",
+      "instructions": "Scan the code for potential null pointer exceptions, race conditions, off-by-one errors, and other common bugs."
+    },
+    {
+      "id": "style-check",
+      "name": "Style Check",
+      "description": "Checks code against style guidelines and conventions.",
+      "instructions": "Review the code for consistent naming, formatting, and adherence to language-specific style guides."
+    }
+  ],
+  "tags": ["code", "analysis", "quality"],
+  "metadata": {
+    "author": "cczupras",
+    "created_at": "2026-06-11T00:00:00Z",
+    "updated_at": "2026-06-11T00:00:00Z"
+  }
+}

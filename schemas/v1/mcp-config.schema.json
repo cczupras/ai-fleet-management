@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cczupras/ai-fleet-management/schemas/v1/mcp-config.schema.json",
+  "title": "MCP Configuration",
+  "description": "Schema for a Model Context Protocol (MCP) configuration resource in the Fleet Management system.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "server"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1",
+      "description": "Schema version identifier."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique identifier for the MCP configuration (kebab-case)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name for the MCP configuration."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what this MCP server provides."
+    },
+    "server": {
+      "type": "object",
+      "oneOf": [
+        { "required": ["command"] },
+        { "required": ["url"] }
+      ],
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "The command to start the MCP server."
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Command-line arguments for the server."
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Environment variables for the server process."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL for remote MCP servers (alternative to command)."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Server connection configuration. Must specify either 'command' (local) or 'url' (remote)."
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the tool provided by this MCP server."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the tool."
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether this tool is enabled."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Tools provided by this MCP server."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization and search."
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true,
+      "description": "Metadata about the MCP configuration resource."
+    }
+  },
+  "additionalProperties": false
+}

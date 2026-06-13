@@ -1,0 +1,36 @@
+{
+  "schema_version": "v1",
+  "id": "github-server",
+  "name": "GitHub MCP Server",
+  "description": "MCP server providing access to GitHub repositories, issues, and pull requests.",
+  "server": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-github"],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_repositories",
+      "description": "Search for GitHub repositories.",
+      "enabled": true
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get contents of a file from a repository.",
+      "enabled": true
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a repository.",
+      "enabled": true
+    }
+  ],
+  "tags": ["github", "version-control", "collaboration"],
+  "metadata": {
+    "author": "cczupras",
+    "created_at": "2026-06-11T00:00:00Z",
+    "updated_at": "2026-06-11T00:00:00Z"
+  }
+}
