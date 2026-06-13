@@ -63,9 +63,10 @@ async function listResources(octokit, owner, repo, branch, resourceType) {
       batch.map(async (item) => {
         try {
           const blob = await octokit.git.getBlob({ owner, repo, file_sha: item.sha });
-          const raw = Buffer.from(blob.data.content, blob.data.encoding === 'base64' ? 'base64' : 'utf-8').toString('utf-8');
+          const raw = Buffer.from(blob.data.content, blob.data.encoding === 'base64' ? 'base64' : 'utf8').toString('utf8');
           return { data: JSON.parse(raw), sha: item.sha };
-        } catch {
+        } catch (blobErr) {
+          console.error('[listResources] Failed to fetch or parse blob', { sha: item.sha, name: item.name, message: blobErr.message });
           return null;
         }
       }),
