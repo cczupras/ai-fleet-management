@@ -111,6 +111,16 @@ describe('findDuplicates', () => {
     assert.equal(result.length, 0);
   });
 
+  test('does not produce false positives when both resources have no description', () => {
+    const existing = [
+      { data: { id: 'alpha-tool', name: 'Alpha Tool' } },
+    ];
+    // Name similarity alone (without description) should not meet the threshold for dissimilar names.
+    const incoming = { id: 'beta-tool', name: 'Beta Tool' };
+    const result = findDuplicates(existing, incoming);
+    assert.equal(result.length, 0);
+  });
+
   test('score property is a number between 0 and 1', () => {
     const existing = [
       { data: { id: 'dup', name: 'Duplicate Agent', description: 'Near duplicate description text here' } },
