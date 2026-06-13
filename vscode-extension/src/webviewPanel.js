@@ -86,7 +86,7 @@ async function openResourcePanel(opts) {
     cspSource: panel.webview.cspSource,
     resourceType,
     resource,
-    mode: mode === 'view' ? 'edit' : mode, // treat 'view' as 'edit' for simplicity
+    mode: mode === 'view' ? 'edit' : mode, // 'view' opens in edit mode (no read-only mode needed)
     assigned,
   });
 

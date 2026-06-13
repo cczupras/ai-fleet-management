@@ -76,7 +76,7 @@ function makeRequest(url, options = {}) {
 class ApiClient {
   /**
    * @param {string} baseUrl - e.g. "http://localhost:3000"
-   * @param {string} [githubToken] - GitHub PAT sent as ******
+   * @param {string} [githubToken] - GitHub Personal Access Token for backend API authentication
    */
   constructor(baseUrl, githubToken) {
     this.baseUrl = (baseUrl || 'http://localhost:3000').replace(/\/$/, '');

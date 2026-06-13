@@ -162,6 +162,7 @@
           "type": "string",
           "default": "",
           "description": "GitHub Personal Access Token (with repo read/write scope) for the backend API",
+          "secret": true,
           "order": 2
         },
         "aiFleetManagement.autoRefreshInterval": {

@@ -175,17 +175,22 @@
     return path.split('.').reduce((acc, k) => (acc != null ? acc[k] : undefined), obj);
   }
 
-  /** Deep-set a dotted key path on an object (mutates). */
+  /** Deep-set a dotted key path on an object (mutates). Guards against prototype pollution. */
   function deepSet(obj, path, value) {
     const keys = path.split('.');
     let cur = obj;
     for (let i = 0; i < keys.length - 1; i++) {
-      if (cur[keys[i]] == null || typeof cur[keys[i]] !== 'object') {
-        cur[keys[i]] = {};
+      const key = keys[i];
+      if (UNSAFE_PROP_KEYS.has(key)) return; // block prototype pollution
+      if (cur[key] == null || typeof cur[key] !== 'object') {
+        cur[key] = {};
       }
-      cur = cur[keys[i]];
+      cur = cur[key];
     }
-    cur[keys[keys.length - 1]] = value;
+    const lastKey = keys[keys.length - 1];
+    if (!UNSAFE_PROP_KEYS.has(lastKey)) {
+      cur[lastKey] = value;
+    }
   }
 
   /** Show or hide an element using the `hidden` attribute. */
@@ -198,6 +203,12 @@
   function esc(str) {
     return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+
+  /**
+   * Keys that must never be used as object property names to prevent prototype pollution.
+   * @type {Set<string>}
+   */
+  const UNSAFE_PROP_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
   // ── Form rendering ─────────────────────────────────────────────────────────
 
@@ -449,8 +460,6 @@
 
   // ── Validation ─────────────────────────────────────────────────────────────
 
-  const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
   function validateForm() {
     let valid = true;
     const defs = FIELD_DEFS[resourceType];
@@ -569,7 +578,7 @@
         <strong>${esc(c.resource.name || c.resource.id)}</strong>
         <span class="match-type">${esc(c.matchType)}</span>
         — ${esc(c.resource.description || '')}
-        (score: ${c.score})
+        (score: ${esc(String(c.score))})
       </li>`,
       )
       .join('');
