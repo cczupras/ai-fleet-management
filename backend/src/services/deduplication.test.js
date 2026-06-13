@@ -106,10 +106,9 @@ describe('findDuplicates', () => {
     ];
     const incoming = { id: 'omega', name: 'Omega Service', description: 'Manages omega workflows completely' };
     const result = findDuplicates(existing, incoming);
-    // "Service" overlaps in name, but description similarity should keep score below threshold
-    if (result.length > 0) {
-      assert.ok(result[0].score >= SIMILARITY_THRESHOLD);
-    }
+    // Only one word ("service") overlaps in the name; descriptions share no meaningful overlap.
+    // The combined Jaccard score should fall below the threshold, so no duplicate is reported.
+    assert.equal(result.length, 0);
   });
 
   test('score property is a number between 0 and 1', () => {

@@ -24,6 +24,54 @@ function formatConflicts(conflicts) {
 }
 
 /**
+ * Validate that dedup_action is one of the accepted values.
+ * Returns a 400 response if invalid, or null if valid/absent.
+ * @param {string|undefined} dedupAction
+ * @param {object} res - Express response object
+ * @returns {boolean} true if the caller should stop processing (invalid action sent)
+ */
+function rejectInvalidDedupAction(dedupAction, res) {
+  if (dedupAction !== undefined && !VALID_DEDUP_ACTIONS.has(dedupAction)) {
+    res.status(400).json({
+      error: 'Bad Request',
+      message: 'Invalid dedup_action. Must be one of: override, merge, link.',
+    });
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Apply the chosen dedup_action to the body, re-validating after a merge.
+ * @param {string} dedupAction - 'override' | 'merge' | 'link'
+ * @param {object} body - Resource body (may be reassigned)
+ * @param {Array} conflicts - Detected duplicate entries
+ * @param {string} resourceType
+ * @param {object} res - Express response object
+ * @returns {{ body: object, earlyReturn: boolean }} Updated body and whether caller should stop
+ */
+function applyDedupAction(dedupAction, body, conflicts, resourceType, res) {
+  if (dedupAction === 'merge') {
+    const merged = dedup.mergeResources(conflicts[0].resource, body);
+    const revalidation = validate(resourceType, merged);
+    if (!revalidation.valid) {
+      res.status(422).json({
+        error: 'Validation Error',
+        message: 'Merged resource failed schema validation.',
+        details: revalidation.errors,
+      });
+      return { body, earlyReturn: true };
+    }
+    return { body: merged, earlyReturn: false };
+  }
+  if (dedupAction === 'link') {
+    return { body: dedup.linkResources(body, conflicts), earlyReturn: false };
+  }
+  // 'override': proceed with body unchanged
+  return { body, earlyReturn: false };
+}
+
+/**
  * Build an Express router that exposes CRUD endpoints for a fleet resource type.
  * @param {string} resourceType - 'agents' | 'skills' | 'prompts' | 'mcp-configs'
  * @returns {express.Router}
@@ -141,26 +189,10 @@ function buildResourceRouter(resourceType) {
             hint: 'Resubmit with ?dedup_action=override|merge|link to resolve.',
           });
         }
-        if (!VALID_DEDUP_ACTIONS.has(dedup_action)) {
-          return res.status(400).json({
-            error: 'Bad Request',
-            message: 'Invalid dedup_action. Must be one of: override, merge, link.',
-          });
-        }
-        if (dedup_action === 'merge') {
-          body = dedup.mergeResources(conflicts[0].resource, body);
-          const revalidation = validate(resourceType, body);
-          if (!revalidation.valid) {
-            return res.status(422).json({
-              error: 'Validation Error',
-              message: 'Merged resource failed schema validation.',
-              details: revalidation.errors,
-            });
-          }
-        } else if (dedup_action === 'link') {
-          body = dedup.linkResources(body, conflicts);
-        }
-        // dedup_action === 'override': proceed with body unchanged
+        if (rejectInvalidDedupAction(dedup_action, res)) return;
+        const actionResult = applyDedupAction(dedup_action, body, conflicts, resourceType, res);
+        if (actionResult.earlyReturn) return;
+        body = actionResult.body;
       }
 
       const result = await github.putResource(
@@ -242,26 +274,10 @@ function buildResourceRouter(resourceType) {
             hint: 'Resubmit with ?dedup_action=override|merge|link to resolve.',
           });
         }
-        if (!VALID_DEDUP_ACTIONS.has(dedup_action)) {
-          return res.status(400).json({
-            error: 'Bad Request',
-            message: 'Invalid dedup_action. Must be one of: override, merge, link.',
-          });
-        }
-        if (dedup_action === 'merge') {
-          body = dedup.mergeResources(conflicts[0].resource, body);
-          const revalidation = validate(resourceType, body);
-          if (!revalidation.valid) {
-            return res.status(422).json({
-              error: 'Validation Error',
-              message: 'Merged resource failed schema validation.',
-              details: revalidation.errors,
-            });
-          }
-        } else if (dedup_action === 'link') {
-          body = dedup.linkResources(body, conflicts);
-        }
-        // dedup_action === 'override': proceed with body unchanged
+        if (rejectInvalidDedupAction(dedup_action, res)) return;
+        const actionResult = applyDedupAction(dedup_action, body, conflicts, resourceType, res);
+        if (actionResult.earlyReturn) return;
+        body = actionResult.body;
       }
 
       const result = await github.putResource(
