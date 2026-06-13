@@ -55,7 +55,10 @@ function jaccardSimilarity(a, b) {
  */
 function computeSimilarity(a, b) {
   const nameSim = jaccardSimilarity(tokenize(a.name || ''), tokenize(b.name || ''));
-  const descSim = jaccardSimilarity(tokenize(a.description || ''), tokenize(b.description || ''));
+  const aDesc = tokenize(a.description || '');
+  const bDesc = tokenize(b.description || '');
+  // Both descriptions empty → no evidence of similarity; treat as 0 to avoid false positives.
+  const descSim = aDesc.size === 0 && bDesc.size === 0 ? 0 : jaccardSimilarity(aDesc, bDesc);
   return 0.6 * nameSim + 0.4 * descSim;
 }
 

@@ -17,7 +17,7 @@ const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
  */
 function formatConflicts(conflicts) {
   return conflicts.map((c) => ({
-    resource: c.resource,
+    resource: { id: c.resource.id, name: c.resource.name, description: c.resource.description },
     matchType: c.matchType,
     score: parseFloat(c.score.toFixed(3)),
   }));
@@ -181,7 +181,7 @@ function buildResourceRouter(resourceType) {
 
       if (conflicts.length > 0) {
         const { dedup_action } = req.query;
-        if (!dedup_action) {
+        if (dedup_action === undefined) {
           return res.status(409).json({
             error: 'Conflict',
             message: 'Potential duplicate resources detected.',
@@ -266,7 +266,7 @@ function buildResourceRouter(resourceType) {
 
       if (conflicts.length > 0) {
         const { dedup_action } = req.query;
-        if (!dedup_action) {
+        if (dedup_action === undefined) {
           return res.status(409).json({
             error: 'Conflict',
             message: 'Potential duplicate resources detected.',
