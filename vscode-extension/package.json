@@ -1,0 +1,180 @@
+{
+  "name": "ai-fleet-management",
+  "displayName": "AI Fleet Management",
+  "description": "Manage AI agents, skills, prompts, and MCP configurations for your workspace",
+  "version": "0.1.0",
+  "publisher": "cczupras",
+  "license": "ISC",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cczupras/ai-fleet-management"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fleetManagement",
+          "title": "AI Fleet Management",
+          "icon": "media/fleet-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "fleetManagement": [
+        {
+          "id": "fleetExplorer",
+          "name": "Fleet Resources",
+          "contextualTitle": "AI Fleet Management"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "fleetManagement.refresh",
+        "title": "Refresh Fleet Resources",
+        "icon": "$(refresh)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.configure",
+        "title": "Configure API Settings",
+        "icon": "$(settings-gear)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.createResource",
+        "title": "Create New Resource",
+        "icon": "$(add)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.editResource",
+        "title": "Edit Resource",
+        "icon": "$(edit)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.deleteResource",
+        "title": "Delete Resource",
+        "icon": "$(trash)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.assignResource",
+        "title": "Assign to Workspace",
+        "icon": "$(add)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.unassignResource",
+        "title": "Unassign from Workspace",
+        "icon": "$(remove)",
+        "category": "Fleet"
+      },
+      {
+        "command": "fleetManagement.openDashboard",
+        "title": "Open Fleet Dashboard",
+        "icon": "$(layout-panel-justify)",
+        "category": "Fleet"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "fleetManagement.refresh",
+          "when": "view == fleetExplorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fleetManagement.openDashboard",
+          "when": "view == fleetExplorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "fleetManagement.configure",
+          "when": "view == fleetExplorer",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "fleetManagement.createResource",
+          "when": "view == fleetExplorer && viewItem == fleetSection",
+          "group": "inline@1"
+        },
+        {
+          "command": "fleetManagement.editResource",
+          "when": "view == fleetExplorer && viewItem =~ /^fleetResource/",
+          "group": "inline@1"
+        },
+        {
+          "command": "fleetManagement.assignResource",
+          "when": "view == fleetExplorer && viewItem == fleetResource",
+          "group": "inline@2"
+        },
+        {
+          "command": "fleetManagement.unassignResource",
+          "when": "view == fleetExplorer && viewItem == fleetResourceAssigned",
+          "group": "inline@2"
+        },
+        {
+          "command": "fleetManagement.editResource",
+          "when": "view == fleetExplorer && viewItem =~ /^fleetResource/",
+          "group": "context@1"
+        },
+        {
+          "command": "fleetManagement.assignResource",
+          "when": "view == fleetExplorer && viewItem == fleetResource",
+          "group": "context@2"
+        },
+        {
+          "command": "fleetManagement.unassignResource",
+          "when": "view == fleetExplorer && viewItem == fleetResourceAssigned",
+          "group": "context@2"
+        },
+        {
+          "command": "fleetManagement.deleteResource",
+          "when": "view == fleetExplorer && viewItem =~ /^fleetResource/",
+          "group": "context@3"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Fleet Management",
+      "properties": {
+        "aiFleetManagement.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "description": "Backend API base URL (e.g. http://localhost:3000)",
+          "order": 1
+        },
+        "aiFleetManagement.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub Personal Access Token (with repo read/write scope) for the backend API",
+          "order": 2
+        },
+        "aiFleetManagement.autoRefreshInterval": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "description": "Auto-refresh interval in seconds (0 to disable)",
+          "order": 3
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.0.0"
+  }
+}
