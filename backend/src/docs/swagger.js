@@ -99,7 +99,7 @@ const definition = {
       'REST API for managing AI agents, skills, prompts, and MCP configurations stored in a GitHub repository.',
     contact: { name: 'cczupras', url: 'https://github.com/cczupras/ai-fleet-management' },
   },
-  servers: [{ url: 'http://localhost:3000', description: 'Local development server' }],
+  servers: [{ url: '/', description: 'Current host' }],
   components: {
     securitySchemes: {
       bearerAuth: {

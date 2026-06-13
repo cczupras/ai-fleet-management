@@ -12,7 +12,7 @@ function auth(req, res, next) {
     return res.status(401).json({
       error: 'Unauthorized',
       message:
-        'Missing or invalid Authorization header. Provide a GitHub PAT via: Authorization: ******',
+        'Missing or invalid Authorization header. Provide a GitHub PAT via: Authorization: Bearer <token>',
     });
   }
   req.githubToken = authHeader.slice(schemePrefix.length).trim();

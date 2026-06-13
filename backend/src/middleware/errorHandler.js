@@ -6,7 +6,8 @@
  */
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
-  console.error('[ErrorHandler]', err);
+  // Log only sanitized fields to avoid leaking credentials present in Octokit error objects
+  console.error('[ErrorHandler]', { name: err.name, message: err.message, status: err.status || err.statusCode });
 
   // GitHub API errors surfaced by Octokit
   if (err.status && err.response) {

@@ -76,7 +76,7 @@ function buildResourceRouter(resourceType) {
   router.post('/', async (req, res, next) => {
     try {
       const body = req.body;
-      if (!body || typeof body !== 'object') {
+      if (!body || typeof body !== 'object' || Array.isArray(body)) {
         return res.status(400).json({ error: 'Bad Request', message: 'Request body must be a JSON object.' });
       }
 
@@ -136,7 +136,7 @@ function buildResourceRouter(resourceType) {
       }
 
       const body = req.body;
-      if (!body || typeof body !== 'object') {
+      if (!body || typeof body !== 'object' || Array.isArray(body)) {
         return res.status(400).json({ error: 'Bad Request', message: 'Request body must be a JSON object.' });
       }
 

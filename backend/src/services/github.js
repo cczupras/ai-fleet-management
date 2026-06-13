@@ -51,16 +51,29 @@ async function listResources(octokit, owner, repo, branch, resourceType) {
     return [];
   }
 
-  const resources = await Promise.all(
-    items
-      .filter((item) => item.type === 'file' && item.name.endsWith('.json'))
-      .map(async (item) => {
-        const id = item.name.replace(/\.json$/, '');
-        return getResource(octokit, owner, repo, branch, resourceType, id);
-      }),
-  );
+  const jsonFiles = items.filter((item) => item.type === 'file' && item.name.endsWith('.json'));
 
-  return resources.filter(Boolean);
+  // Fetch blob content using the SHA from the directory listing to avoid redundant path
+  // resolution. Process in small batches to stay within GitHub rate limits.
+  const BATCH_SIZE = 5;
+  const resources = [];
+  for (let i = 0; i < jsonFiles.length; i += BATCH_SIZE) {
+    const batch = jsonFiles.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(
+      batch.map(async (item) => {
+        try {
+          const blob = await octokit.git.getBlob({ owner, repo, file_sha: item.sha });
+          const raw = Buffer.from(blob.data.content, blob.data.encoding === 'base64' ? 'base64' : 'utf-8').toString('utf-8');
+          return { data: JSON.parse(raw), sha: item.sha };
+        } catch {
+          return null;
+        }
+      }),
+    );
+    resources.push(...batchResults.filter(Boolean));
+  }
+
+  return resources;
 }
 
 /**
